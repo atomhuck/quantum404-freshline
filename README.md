@@ -10,13 +10,13 @@ FreshLine — веб-система для ресторанного склада
 
 | Роль / ветка | Снимок на `main` | Следующий результат | Текущий статус | План части | Журнал передачи |
 |---|---|---|---|---|---|
-| Lead · `codex/lead` | `FREE`, T001 | Java scaffold, контракт, Compose, CI | [lead](docs/progress/lead.md) | [план](docs/lanes/lead.md) | [журнал](docs/handoffs/lead.md) |
-| Backend orders · `codex/orders` | `FREE`, ждёт G0 | Домен, порты, FEFO | [orders](docs/progress/orders.md) | [план](docs/lanes/orders.md) | [журнал](docs/handoffs/orders.md) |
-| Backend fullstack · `codex/web` | `FREE`, T002 | UI shell и typed API | [web](docs/progress/web.md) | [план](docs/lanes/web.md) | [журнал](docs/handoffs/web.md) |
-| Data engineer · `codex/data` | `FREE`, T003 после согласования модели | Миграция и SQL-порты | [data](docs/progress/data.md) | [план](docs/lanes/data.md) | [журнал](docs/handoffs/data.md) |
-| QA · `codex/qa` | `FREE`, T004 | Матрица и фикстуры до кода | [qa](docs/progress/qa.md) | [план](docs/lanes/qa.md) | [журнал](docs/handoffs/qa.md) |
+| Lead · `codex/lead` | `FREE`, T001 | Java scaffold, контракт, Compose, CI | [lead](https://github.com/atomhuck/quantum404-freshline/blob/codex/lead/docs/progress/lead.md) | [план](docs/lanes/lead.md) | [журнал](https://github.com/atomhuck/quantum404-freshline/blob/codex/lead/docs/handoffs/lead.md) |
+| Backend orders · `codex/orders` | `FREE`, ждёт G0 | Домен, порты, FEFO | [orders](https://github.com/atomhuck/quantum404-freshline/blob/codex/orders/docs/progress/orders.md) | [план](docs/lanes/orders.md) | [журнал](https://github.com/atomhuck/quantum404-freshline/blob/codex/orders/docs/handoffs/orders.md) |
+| Backend fullstack · `codex/web` | `FREE`, T002 | UI shell и typed API | [web](https://github.com/atomhuck/quantum404-freshline/blob/codex/web/docs/progress/web.md) | [план](docs/lanes/web.md) | [журнал](https://github.com/atomhuck/quantum404-freshline/blob/codex/web/docs/handoffs/web.md) |
+| Data engineer · `codex/data` | `FREE`, T003 после согласования модели | Миграция и SQL-порты | [data](https://github.com/atomhuck/quantum404-freshline/blob/codex/data/docs/progress/data.md) | [план](docs/lanes/data.md) | [журнал](https://github.com/atomhuck/quantum404-freshline/blob/codex/data/docs/handoffs/data.md) |
+| QA · `codex/qa` | `FREE`, T004 | Матрица и фикстуры до кода | [qa](https://github.com/atomhuck/quantum404-freshline/blob/codex/qa/docs/progress/qa.md) | [план](docs/lanes/qa.md) | [журнал](https://github.com/atomhuck/quantum404-freshline/blob/codex/qa/docs/handoffs/qa.md) |
 
-**Как читать:** `FREE` — полоса свободна, задача не готова; `ACTIVE` — агент работает; `HANDOFF` — опубликована передача; `INTERRUPTED` — восстановление по [протоколу](docs/TEAM_WORKFLOW.md). В статусе указаны владелец, задача, проверенный SHA, команды и `next_step`. Журнал хранит хронологию передач. На GitHub для самой свежей записи переключите селектор ветки с `main` на `codex/<роль>` и откройте тот же файл. Lead обновляет снимок в этом README после интеграции; чекбокс [задачи](specs/001-restaurant-inventory/tasks.md) отмечается только после проверки и push.
+**Как читать:** `FREE` — полоса свободна, задача не готова; `ACTIVE` — агент работает; `HANDOFF` — опубликована передача; `INTERRUPTED` — восстановление по [протоколу](docs/TEAM_WORKFLOW.md). Ссылки «статус» и «журнал» ведут **сразу в ветку роли**, где лежит самая свежая публикация. В статусе указаны владелец, задача, проверенный SHA, команды и `next_step`; журнал хранит хронологию передач. Lead обновляет снимок в этом README после интеграции; чекбокс [задачи](specs/001-restaurant-inventory/tasks.md) отмечается только после проверки и push.
 
 | Ворота продукта | Статус на `main` | Что подтвердит готовность |
 |---|---|---|
