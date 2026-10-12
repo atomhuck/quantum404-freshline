@@ -14,6 +14,8 @@ human_required: []
 
 # Data progress
 
+[План работы](../lanes/data.md) · [Журнал передачи](../handoffs/data.md) · [Общий календарь](../ROADMAP.md). Это оперативное состояние полосы; при смене компьютера читать также последнюю запись журнала.
+
 | Task | State | Evidence |
 |---|---|---|
 | T003/T012/T015/T018/T021/T026/T033/T037/T041/T045/T053 | TODO | No migrations exist yet |

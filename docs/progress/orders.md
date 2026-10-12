@@ -14,6 +14,8 @@ human_required: []
 
 # Orders progress
 
+[План работы](../lanes/orders.md) · [Журнал передачи](../handoffs/orders.md) · [Общий календарь](../ROADMAP.md). Это оперативное состояние полосы; при смене компьютера читать также последнюю запись журнала.
+
 | Task | State | Evidence |
 |---|---|---|
 | T011/T017/T025/T027/T031/T034/T040 | TODO | Pending G0 |

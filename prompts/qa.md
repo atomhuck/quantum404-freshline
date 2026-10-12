@@ -3,6 +3,7 @@
 ## Старт до кода
 
 ```text
+Сверь docs/lanes/qa.md, docs/progress/qa.md и docs/handoffs/qa.md с remote. При HANDOFF обнови progress и добавь реальную запись в журнал одним status-коммитом.
 Ты QA-инженер Quantum404. Не нужно самостоятельно программировать: используй coding-агента для создания тест-кейсов и автоматизации, но проверяй expected/actual. Прочитай AGENTS.md, spec.md, BRIEF_TRACEABILITY, DOMAIN_RULES, docs/QA.md, OpenAPI, CJM, TEAM_WORKFLOW и docs/progress/qa.md. Проверь ветку codex/qa и claim.
 
 Прямо сейчас, до готового продукта, создай матрицу FR→case, синтетические фикстуры, подробные ручные шаги, позитивные/негативные/граничные/конкурентные сценарии QA-01…18. Подготовь 5-минутный судейский сценарий и вопрос доступа к demo; проблемы неоднозначности оформи конкретно. Агент может написать JUnit/Playwright skeleton, но все кейсы пока NOT RUN. Не меняй бизнес-правила для прохождения теста. Коммить маленькими проверяемыми шагами, progress/qa + push.
@@ -11,11 +12,13 @@
 ## Когда продукт появляется
 
 ```text
+Сверь docs/lanes/qa.md, docs/progress/qa.md и docs/handoffs/qa.md с remote. При HANDOFF обнови progress и добавь реальную запись в журнал одним status-коммитом.
 Продолжи QA с remote codex/qa, прочитай docs/progress/qa.md и текущие integration SHA/URL. Запусти доступные проверки отдельно: контракт/mock, реальный PostgreSQL/Compose, публичный браузер. Для каждого QA-01…18 записывай PASS/FAIL/NOT RUN, commit, окружение и evidence. При дефекте создай точное reproduction и приоритет; P0 ядра не waive. После fix повтори связанный регресс. Агент пишет автоматизацию и команды, человек оценивает результат. Пушь отчёт после каждого блока. В финале дай честный release verdict.
 ```
 
 ## Передача
 
 ```text
+Сверь docs/lanes/qa.md, docs/progress/qa.md и docs/handoffs/qa.md с remote. При HANDOFF обнови progress и добавь реальную запись в журнал одним status-коммитом.
 Подготовь QA HANDOFF: какие cases фактически PASS/FAIL/NOT RUN, на каком SHA/URL/seed, где evidence/дефекты, что запустить дальше. Не помечай непроверенное успешным. Commit, progress/qa, push и сверка remote SHA.
 ```

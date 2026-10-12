@@ -14,6 +14,8 @@ human_required: []
 
 # Lead progress
 
+[План работы](../lanes/lead.md) · [Журнал передачи](../handoffs/lead.md) · [Общий календарь](../ROADMAP.md). Это оперативное состояние полосы; при смене компьютера читать также последнюю запись журнала.
+
 | Task | State | Evidence |
 |---|---|---|
 | T001/T005/T006/T009/T010 | TODO | No product code exists yet |

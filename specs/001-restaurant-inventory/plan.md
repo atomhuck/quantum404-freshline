@@ -36,7 +36,9 @@ specs/001-restaurant-inventory/{spec,plan,research,data-model,quickstart,tasks}.
 contracts/openapi.yaml              # единственный HTTP-контракт
 docs/{BRIEF_TRACEABILITY,DOMAIN_RULES,DECISIONS,TEAM_WORKFLOW,ROADMAP,QA,FRONTEND,DEPLOYMENT}.md
 docs/diagrams/{architecture,erd,cjm}.md
+docs/lanes/{lead,orders,data,web,qa}.md
 docs/progress/{lead,orders,data,web,qa}.md
+docs/handoffs/{lead,orders,data,web,qa}.md
 prompts/*.md
 ```
 
