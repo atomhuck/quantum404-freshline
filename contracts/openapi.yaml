@@ -1,0 +1,375 @@
+openapi: 3.0.3
+info:
+  title: FreshLine API
+  version: 1.0.0
+  description: Contract-first API for one synthetic restaurant demo. Mutations require session and Idempotency-Key.
+servers:
+  - url: /api/v1
+tags:
+  - name: catalog
+  - name: stock
+  - name: orders
+  - name: insight
+  - name: demo
+paths:
+  /session:
+    post:
+      tags: [demo]
+      operationId: createDemoSession
+      summary: Exchange demo access code for a Secure HttpOnly session and CSRF token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [accessCode]
+              properties:
+                accessCode: {type: string, minLength: 1}
+      responses:
+        '200':
+          description: Cookie session plus CSRF token for X-CSRF-Token
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [csrfToken]
+                properties:
+                  csrfToken: {type: string}
+        '401': {description: Invalid access code}
+        '429': {description: Rate limit}
+  /ingredients:
+    get:
+      tags: [catalog]
+      operationId: listIngredients
+      responses:
+        '200':
+          description: Ingredient catalogue
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/Ingredient'}
+  /dishes:
+    get:
+      tags: [catalog]
+      operationId: listDishes
+      responses:
+        '200':
+          description: Current recipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/Dish'}
+  /deliveries:
+    post:
+      tags: [stock]
+      operationId: receiveDelivery
+      security: [{demoSession: []}]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/DeliveryRequest'}
+      responses:
+        '201':
+          description: Created delivery and batches
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/DeliveryResult'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '409': {$ref: '#/components/responses/Conflict'}
+  /stock:
+    get:
+      tags: [stock]
+      operationId: getStock
+      responses:
+        '200':
+          description: Aggregate and batch-level stock
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/StockItem'}
+  /orders:
+    post:
+      tags: [orders]
+      operationId: placeOrder
+      security: [{demoSession: []}]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/CsrfToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/OrderRequest'}
+      responses:
+        '201':
+          description: Accepted order
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/OrderResult'}
+        '409':
+          description: Insufficient stock or idempotency conflict. No stock consumed for rejected order.
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Problem'}
+        '400': {$ref: '#/components/responses/BadRequest'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+  /orders/{id}:
+    get:
+      tags: [orders]
+      operationId: getOrder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200':
+          description: Order outcome
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/OrderResult'}
+        '404': {description: Unknown order}
+  /stop-list:
+    get:
+      tags: [insight]
+      operationId: getStopList
+      responses:
+        '200':
+          description: Unavailable dishes and missing ingredients
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/StopListEntry'}
+  /hot-offers:
+    get:
+      tags: [insight]
+      operationId: getHotOffers
+      responses:
+        '200':
+          description: Available dishes ordered by explainable expiry priority
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/HotOffer'}
+  /replenishment:
+    get:
+      tags: [insight]
+      operationId: getReplenishment
+      responses:
+        '200':
+          description: Simple target-stock advice with explanation
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/ReplenishmentAdvice'}
+  /events:
+    get:
+      tags: [demo]
+      operationId: streamEvents
+      parameters:
+        - name: Last-Event-ID
+          in: header
+          schema: {type: string}
+      responses:
+        '200':
+          description: SSE of committed state changes; client refetches snapshots after reconnect
+          content:
+            text/event-stream:
+              schema: {type: string}
+components:
+  securitySchemes:
+    demoSession:
+      type: apiKey
+      in: cookie
+      name: FRESHLINE_SESSION
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: {type: string, minLength: 8, maxLength: 128}
+    CsrfToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema: {type: string}
+  responses:
+    BadRequest:
+      description: Validation error
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Problem'}
+    Unauthorized:
+      description: Login or CSRF required
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Problem'}
+    Conflict:
+      description: Duplicate identifier or idempotency conflict
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Problem'}
+  schemas:
+    Ingredient:
+      type: object
+      required: [id, name, baseUnit]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        baseUnit: {type: string, enum: [g, ml, pcs]}
+        reorderPoint: {type: string, description: Decimal base units}
+    Dish:
+      type: object
+      required: [id, name, recipeVersion, items]
+      properties:
+        id: {type: string, format: uuid}
+        name: {type: string}
+        recipeVersion: {type: integer, minimum: 1}
+        items:
+          type: array
+          items: {$ref: '#/components/schemas/RecipeItem'}
+    RecipeItem:
+      type: object
+      required: [ingredientId, quantityPerServing]
+      properties:
+        ingredientId: {type: string, format: uuid}
+        quantityPerServing: {type: string, description: Positive decimal in ingredient base unit}
+    DeliveryRequest:
+      type: object
+      required: [supplier, deliveryNumber, receivedAt, lines]
+      properties:
+        supplier: {type: string, minLength: 1}
+        deliveryNumber: {type: string, minLength: 1}
+        receivedAt: {type: string, format: date-time}
+        lines:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [ingredientId, quantity]
+            properties:
+              ingredientId: {type: string, format: uuid}
+              quantity: {type: string, description: Positive decimal base units}
+              manufacturedOn: {type: string, format: date}
+              shelfLifeDays: {type: integer, minimum: 1}
+              supplierExpiresOn: {type: string, format: date}
+              expirySource: {type: string, enum: [calculated, supplier_label]}
+    DeliveryResult:
+      type: object
+      required: [id, deliveryNumber, batchIds]
+      properties:
+        id: {type: string, format: uuid}
+        deliveryNumber: {type: string}
+        batchIds:
+          type: array
+          items: {type: string, format: uuid}
+    StockItem:
+      type: object
+      required: [ingredientId, usableQuantity, totalQuantity, batches]
+      properties:
+        ingredientId: {type: string, format: uuid}
+        usableQuantity: {type: string}
+        totalQuantity: {type: string}
+        batches:
+          type: array
+          items: {$ref: '#/components/schemas/BatchView'}
+    BatchView:
+      type: object
+      required: [id, remainingQuantity, expiresOn, daysRemaining, state]
+      properties:
+        id: {type: string, format: uuid}
+        remainingQuantity: {type: string}
+        expiresOn: {type: string, format: date}
+        daysRemaining: {type: integer}
+        state: {type: string, enum: [fresh, expiring, expired]}
+    OrderRequest:
+      type: object
+      required: [source, externalId, items]
+      properties:
+        source: {type: string, enum: [web, simulator]}
+        externalId: {type: string, minLength: 1}
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [dishId, servings]
+            properties:
+              dishId: {type: string, format: uuid}
+              servings: {type: integer, minimum: 1}
+    OrderResult:
+      type: object
+      required: [id, status, items, consumption]
+      properties:
+        id: {type: string, format: uuid}
+        status: {type: string, enum: [accepted, rejected]}
+        items:
+          type: array
+          items: {type: object}
+        consumption:
+          type: array
+          items: {$ref: '#/components/schemas/ConsumptionView'}
+        shortage:
+          type: array
+          items: {$ref: '#/components/schemas/Shortage'}
+    ConsumptionView:
+      type: object
+      required: [batchId, ingredientId, quantity]
+      properties:
+        batchId: {type: string, format: uuid}
+        ingredientId: {type: string, format: uuid}
+        quantity: {type: string}
+    Shortage:
+      type: object
+      required: [ingredientId, required, available, missing]
+      properties:
+        ingredientId: {type: string, format: uuid}
+        required: {type: string}
+        available: {type: string}
+        missing: {type: string}
+    StopListEntry:
+      type: object
+      required: [dishId, shortages]
+      properties:
+        dishId: {type: string, format: uuid}
+        shortages:
+          type: array
+          items: {$ref: '#/components/schemas/Shortage'}
+    HotOffer:
+      type: object
+      required: [dishId, score, possibleServings, reasons]
+      properties:
+        dishId: {type: string, format: uuid}
+        score: {type: number, minimum: 0}
+        possibleServings: {type: integer, minimum: 1}
+        reasons:
+          type: array
+          items: {type: string}
+    ReplenishmentAdvice:
+      type: object
+      required: [ingredientId, suggestedQuantity, basis]
+      properties:
+        ingredientId: {type: string, format: uuid}
+        suggestedQuantity: {type: string}
+        basis: {type: string, enum: [recent_consumption, reorder_point, insufficient_history]}
+        explanation: {type: string}
+    Problem:
+      type: object
+      required: [code, message, requestId]
+      properties:
+        code: {type: string}
+        message: {type: string}
+        requestId: {type: string}
+        details: {type: object, additionalProperties: true}
