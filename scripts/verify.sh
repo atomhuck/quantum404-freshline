@@ -29,6 +29,29 @@ command -v docker >/dev/null 2>&1 || fail "Docker CLI is required for Compose co
 echo "+ docker compose config --quiet (ephemeral validation values; no containers started)"
 POSTGRES_PASSWORD=validation-only FRESHLINE_DEMO_ACCESS_CODE=validation-only docker compose config --quiet \
   || fail "Compose configuration is invalid."
+command -v node >/dev/null 2>&1 || fail "Node.js is required to verify Compose database exposure."
+echo "+ assert PostgreSQL has no published host ports"
+compose_config="$(POSTGRES_PASSWORD=validation-only FRESHLINE_DEMO_ACCESS_CODE=validation-only docker compose config --format json)" \
+  || fail "Compose JSON configuration could not be rendered."
+printf '%s' "$compose_config" | node -e '
+let input = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", chunk => input += chunk);
+process.stdin.on("end", () => {
+  const configuration = JSON.parse(input);
+  const postgres = configuration.services && configuration.services.postgres;
+  if (!postgres) {
+    console.error("Compose service postgres is missing.");
+    process.exitCode = 1;
+    return;
+  }
+  if (Array.isArray(postgres.ports) && postgres.ports.length > 0) {
+    console.error("PostgreSQL must not publish host ports.");
+    process.exitCode = 1;
+  }
+});
+' || fail "PostgreSQL must not publish host ports."
+echo "PASS: PostgreSQL has no published host ports."
 
 if [[ "$scope" == "full" ]]; then
   for path in frontend/package.json frontend/package-lock.json frontend/Dockerfile simulator/Dockerfile; do

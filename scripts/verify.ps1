@@ -45,6 +45,19 @@ try {
         $env:POSTGRES_PASSWORD = 'validation-only'
         $env:FRESHLINE_DEMO_ACCESS_CODE = 'validation-only'
         Invoke-CheckedCommand 'docker' @('compose', 'config', '--quiet')
+        Write-Host 'RUN: docker compose config --format json (assert PostgreSQL has no published ports)'
+        $composeJson = & docker compose config --format json
+        if ($LASTEXITCODE -ne 0) {
+            throw "FAIL: docker compose config --format json exited with code $LASTEXITCODE"
+        }
+        $composeConfig = ($composeJson -join "`n") | ConvertFrom-Json
+        if ($null -eq $composeConfig.services.postgres) {
+            throw 'FAIL: Compose service "postgres" is missing.'
+        }
+        if ($null -ne $composeConfig.services.postgres.ports -and $composeConfig.services.postgres.ports.Count -gt 0) {
+            throw 'FAIL: PostgreSQL must not publish host ports.'
+        }
+        Write-Host 'PASS: PostgreSQL has no published host ports.'
     }
     finally {
         if ($null -eq $oldDbPassword) { Remove-Item Env:POSTGRES_PASSWORD -ErrorAction SilentlyContinue }
