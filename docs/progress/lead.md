@@ -4,11 +4,11 @@ owner: Codex desktop lead
 session_id: 42241754-8332-477d-af91-c46606b51966
 branch: codex/lead
 current_task: T054
-substep: "Remote claim refreshed on the existing Lead session; T019 is blocked on unpublished Data/Orders dependencies, so proceeding with independent production security/config guards"
-last_verified_code_commit: 4dbd058c8c003c8556a73d0c9cefe03020efcc18
+substep: "Production-profile startup guard implemented and pushed; adding an automated Compose assertion that PostgreSQL is not host-published"
+last_verified_code_commit: a6b7ac3197d9b3dbe08e611f76c9d211500263cc
 checkpoint: WIP
-next_step: "Complete T054 fail-closed production configuration checks with negative tests, then resume T019 as soon as T003/T011/T014/T017/T018 are published; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T18:20:33Z
+next_step: "Finish the PostgreSQL Compose exposure assertion in PowerShell/Bash verification and rerun both backend scopes; then resume T019 as soon as T003/T011/T014/T017/T018 are published"
+heartbeat_utc: 2026-10-13T18:27:51Z
 human_required: [H-02]
 ---
 
@@ -23,6 +23,7 @@ human_required: [H-02]
 | T006 | WIP | Compose config parses; Docker 29.8.0 built and started API with PostgreSQL 17.11. PG health, API startup/DB connection, actuator 200, and cookie/CSRF HTTP smoke pass. Full Web/simulator stack is NOT RUN because `frontend/` and `simulator/` contexts are absent |
 | T009 | DONE | CI + PowerShell/Bash verify scripts in `6a257f9f996a786bf72422196d0f213363049b06`; Action runtime upgrade in `eaabe229504b3ac6e51aff16d597770c234eeeaa`; backend checks pass; Actions run `38426125849`: backend job success, full-stack job failed at missing `frontend/package.json` |
 | T013 | DONE | API Problem mapping, request IDs, input validation, demo session, HttpOnly `FRESHLINE_SESSION`, CSRF, five-attempt rate limit; `scripts/verify.ps1 -Scope backend` exit=0 (8 tests + OpenAPI lint + Compose config); Docker HTTP smoke confirms session, CSRF and 404 Problem behavior; code `4dbd058c8c003c8556a73d0c9cefe03020efcc18` |
+| T054 | WIP | Production-profile startup guard code `a6b7ac3197d9b3dbe08e611f76c9d211500263cc` is pushed and its tests/backend verification passed. Automated Compose assertion that PostgreSQL has no published host ports is being added before marking complete |
 | T014 | TODO | Cross-lane Java port signatures not agreed or created; Orders/Data were `FREE` at last remote inspection |
 | T010 / G0 | NOT RUN | G0 requires all T001–T009, shared contract/ports, and integration evidence |
 
@@ -51,3 +52,5 @@ Hosted checks for PR head `222455f7b59847b62e18caf0871d342e15f1ffb7`: push run `
 Hosted check for the published follow-up head `0d929bb3c58573d8a4b300cea0eeadf86044b2ec`: pull-request run `38436737552`; backend/OpenAPI/Compose passed, full-stack verification failed with the same absent `frontend/package.json` (exit 1). This is a docs-only status commit over the T013 code commit `4dbd058c8c003c8556a73d0c9cefe03020efcc18`; T013 remains locally verified, while G0 and release remain NOT RUN.
 
 Ownership refresh 2026-10-13T18:20:33Z: `git fetch origin --prune`; local branch and `origin/codex/lead` both resolve to `e306a8e4dc5ad80e7602f0ea708043b73ba31751`; working tree was clean. `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match that remote revision. Remote `codex/data`, `codex/orders`, `codex/web`, `codex/qa`, and `codex/integration` remain at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; their code/progress artifacts for T003/T011/T014/T017/T018, frontend, and QA remain unpublished. This is a refresh of the same owner/session `42241754-8332-477d-af91-c46606b51966`, not a takeover; H-02 remains the required team-owner action. T019 is blocked on those cross-lane artifacts. Continue with independent Lead-owned production security/config validation (T054) while preserving the delivery→PG path as the next product integration.
+
+T054 guard code checkpoint `a6b7ac3197d9b3dbe08e611f76c9d211500263cc`: added a Spring `BeanFactoryPostProcessor` guard for active `prod`/`production` profiles. Startup now fails before regular bean initialization if the session cookie is not Secure, the datasource password is absent/common-default, or enabled demo writes lack a non-default access code; diagnostics identify only the variable name and never echo its value. Focused guard suite: `mvn -B -q -f backend/pom.xml -pl app -am "-Dtest=ProductionSecurityConfigurationGuardTest" "-Dsurefire.failIfNoSpecifiedTests=false" test` → exit 0 (6 tests, including actual context-refresh failure). Full local backend scope before the pending Compose assertion: `scripts/verify.ps1 -Scope backend` → exit 0; Maven reactor 14 tests passed and Redocly lint/Compose config passed. PostgreSQL host-port assertion is still WIP, so T054 remains WIP. Frontend build was explicitly excluded by backend scope; full-stack verification remains NOT RUN/FAIL due missing `frontend/package.json` and simulator context. G0/G1/G2/G3/release remain NOT RUN; the security guard does not close a product gate.
