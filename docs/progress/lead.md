@@ -8,7 +8,7 @@ substep: "T019 preflight: mapped business writes enforce contract Idempotency-Ke
 last_verified_code_commit: 1fcf666bca1be00b63697e55919402683be9cdcb
 checkpoint: WIP
 next_step: "After H-02 owners publish T003/T011/T014/T017/T018, fetch and confirm their exact SHAs, then implement transactional T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks; continue to T022. Rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T19:14:37Z
+heartbeat_utc: 2026-10-13T19:17:10Z
 human_required: [H-02]
 ---
 
@@ -65,3 +65,5 @@ Ownership refresh 2026-10-13T19:07:29Z: `git fetch origin --prune`; local `HEAD`
 Hosted PR check for published checkpoint `e67d55cd2fa8b20d1b5d71eb2def0309490e014a`: Actions run `38452465714` completed. Backend/OpenAPI/Compose job succeeded: Maven reactor 14 tests passed, OpenAPI lint passed, Compose config passed, and the PostgreSQL host-port assertion passed. Full-stack job failed at `frontend/package.json` missing; frontend/simulator validation remains NOT RUN. This checkpoint changes only progress documentation; G0/G1/G2/G3/release remain NOT RUN.
 
 T019 preflight code `1fcf666bca1be00b63697e55919402683be9cdcb`: `IdempotencyKeyWebConfiguration` checks mapped mutating `/api/v1/**` handlers, excludes the session bootstrap, and returns safe request-ID Problems for missing or out-of-range `Idempotency-Key` values (OpenAPI 8–128 character bounds). The focused `DemoSessionSecurityTest` first exposed that an unmapped URL could receive 400 before 404; the interceptor was narrowed to controller handlers. Final focused command `mvn -B -q -f backend/pom.xml -pl app -am "-Dtest=DemoSessionSecurityTest" "-Dsurefire.failIfNoSpecifiedTests=false" test` → exit 0 (7 tests). `scripts/verify.ps1 -Scope backend` → exit 0 (15 application tests, OpenAPI lint, Compose config, PostgreSQL no-host-port assertion). This is only the HTTP key-presence/length check; transactional replay, canonical-body conflict, and delivery rollback were not run and remain pending T003/T011/T014/T017/T018. No domain or persistence files changed.
+
+Hosted PR run `38453380322` checked merge commit `fc180e618f77f195da25ad5a0c707f5ad8a3cdd8`, which includes published code `1fcf666bca1be00b63697e55919402683be9cdcb` and status `7ab93005f9ef37cfb1eb3065b9e6029a2fd91efa`. Backend/OpenAPI/Compose job succeeded; full-stack job failed with `frontend/package.json` missing. The application key-boundary checks therefore pass locally and in hosted backend verification, while replay/hash-conflict and the full product vertical remain NOT RUN.
