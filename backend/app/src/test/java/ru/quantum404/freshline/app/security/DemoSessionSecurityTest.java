@@ -31,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(DemoSessionController.class)
 @Import({SecurityConfiguration.class, SessionAttemptLimiter.class, ApiProblemWriter.class,
-        ApiExceptionHandler.class, RequestIdFilter.class, DemoSessionSecurityTest.ProbeConfiguration.class})
+        ApiExceptionHandler.class, RequestIdFilter.class, IdempotencyKeyWebConfiguration.class,
+        DemoSessionSecurityTest.ProbeConfiguration.class})
 @TestPropertySource(properties = {
         "FRESHLINE_DEMO_ACCESS_CODE=test-access-code",
         "DEMO_MODE=true",
@@ -79,7 +80,54 @@ class DemoSessionSecurityTest {
 
         mockMvc.perform(post("/api/v1/test/write")
                         .session((org.springframework.mock.web.MockHttpSession) session)
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "retry-key-0001"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void businessWritesRequireContractSizedIdempotencyKey() throws Exception {
+        MvcResult login = mockMvc.perform(post("/api/v1/session")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"accessCode\":\"test-access-code\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+        JsonNode sessionResponse = objectMapper.readTree(login.getResponse().getContentAsByteArray());
+        String csrfToken = sessionResponse.path("csrfToken").asText();
+        var session = (org.springframework.mock.web.MockHttpSession) login.getRequest().getSession(false);
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
                         .header("X-CSRF-Token", csrfToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", is("IDEMPOTENCY_KEY_REQUIRED")))
+                .andExpect(jsonPath("$.requestId").isNotEmpty())
+                .andExpect(header().exists(RequestIdFilter.HEADER));
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "short"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", is("INVALID_IDEMPOTENCY_KEY")));
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "k".repeat(129)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", is("INVALID_IDEMPOTENCY_KEY")));
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "12345678"))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "k".repeat(128)))
                 .andExpect(status().isNoContent());
     }
 
@@ -130,7 +178,8 @@ class DemoSessionSecurityTest {
 
         mockMvc.perform(post("/api/v1/test/failure")
                         .session(session)
-                        .header("X-CSRF-Token", csrfToken))
+                        .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "retry-key-0002"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.code", is("INTERNAL_ERROR")))
                 .andExpect(jsonPath("$.message", not(containsString("internal-private-detail"))))
