@@ -4,11 +4,11 @@ owner: Codex desktop lead
 session_id: 42241754-8332-477d-af91-c46606b51966
 branch: codex/lead
 current_task: T019
-substep: "Remote audit 2026-10-13T19:07:29Z: lead plan/progress/handoff match origin; T019 awaits Data/Orders artifacts; Docker API/PG containers are stopped"
-last_verified_code_commit: c67bf8b7cb7db95501b9408d69eb8033c0793211
+substep: "T019 preflight: mapped business writes enforce contract Idempotency-Key bounds; PostgreSQL replay/hash conflict awaits Data/Orders artifacts"
+last_verified_code_commit: 1fcf666bca1be00b63697e55919402683be9cdcb
 checkpoint: WIP
-next_step: "After H-02 owners publish T003/T011/T014/T017/T018, fetch and confirm their exact SHAs, then implement T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks; continue to T022. Rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T19:09:45Z
+next_step: "After H-02 owners publish T003/T011/T014/T017/T018, fetch and confirm their exact SHAs, then implement transactional T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks; continue to T022. Rerun full Compose/CI when Web/simulator contexts arrive"
+heartbeat_utc: 2026-10-13T19:14:37Z
 human_required: [H-02]
 ---
 
@@ -25,6 +25,7 @@ human_required: [H-02]
 | T013 | DONE | API Problem mapping, request IDs, input validation, demo session, HttpOnly `FRESHLINE_SESSION`, CSRF, five-attempt rate limit; `scripts/verify.ps1 -Scope backend` exit=0 (8 tests + OpenAPI lint + Compose config); Docker HTTP smoke confirms session, CSRF and 404 Problem behavior; code `4dbd058c8c003c8556a73d0c9cefe03020efcc18` |
 | T054 | DONE | Production-profile startup guard and Compose PostgreSQL host-port assertion; focused guard tests (6), both local backend scripts, and hosted Backend/OpenAPI/Compose job pass; final code `c67bf8b7cb7db95501b9408d69eb8033c0793211` |
 | T014 | TODO | Cross-lane Java port signatures not agreed or created; Orders/Data were `FREE` at last remote inspection |
+| T019 | WIP | Added API-level Idempotency-Key requirement and contract length check for mapped business writes; focused and backend checks pass at code `1fcf666bca1be00b63697e55919402683be9cdcb`; transactional persistence/replay/hash conflict remain NOT RUN pending Data/Orders artifacts |
 | T010 / G0 | NOT RUN | G0 requires all T001–T009, shared contract/ports, and integration evidence |
 
 T001 result: `mvn -B -q -f backend/pom.xml clean verify` → exit 0 (2026-10-13; local JDK 23, `maven.compiler.release=21`).
@@ -62,3 +63,5 @@ T006 Compose/config checkpoint `6a257f9f996a786bf72422196d0f213363049b06` was re
 Ownership refresh 2026-10-13T19:07:29Z: `git fetch origin --prune`; local `HEAD` and `origin/codex/lead` both resolve to `690bcb86951d5b95056e246717fbc893a7ae30c6`; worktree was clean before this status update. `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match that remote revision; there has been no handoff, so the journal correctly remains empty. Remote Data/Orders/Web/QA branches all resolve to baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; their progress files remain `FREE`, with T003/T011/T014/T017/T018 and T002/T004 unpublished. Docker Engine `29.8.0` responds; `docker compose ps --all` with process-only validation values exits 0 and shows API `Exited (143)` and PostgreSQL `Exited (0)`. No private `.env` was created. Same owner/session `42241754-8332-477d-af91-c46606b51966` retains the active claim; H-02 is still the concrete external dependency. G0/G1/G2/G3/release remain NOT RUN; no product vertical is claimed.
 
 Hosted PR check for published checkpoint `e67d55cd2fa8b20d1b5d71eb2def0309490e014a`: Actions run `38452465714` completed. Backend/OpenAPI/Compose job succeeded: Maven reactor 14 tests passed, OpenAPI lint passed, Compose config passed, and the PostgreSQL host-port assertion passed. Full-stack job failed at `frontend/package.json` missing; frontend/simulator validation remains NOT RUN. This checkpoint changes only progress documentation; G0/G1/G2/G3/release remain NOT RUN.
+
+T019 preflight code `1fcf666bca1be00b63697e55919402683be9cdcb`: `IdempotencyKeyWebConfiguration` checks mapped mutating `/api/v1/**` handlers, excludes the session bootstrap, and returns safe request-ID Problems for missing or out-of-range `Idempotency-Key` values (OpenAPI 8–128 character bounds). The focused `DemoSessionSecurityTest` first exposed that an unmapped URL could receive 400 before 404; the interceptor was narrowed to controller handlers. Final focused command `mvn -B -q -f backend/pom.xml -pl app -am "-Dtest=DemoSessionSecurityTest" "-Dsurefire.failIfNoSpecifiedTests=false" test` → exit 0 (7 tests). `scripts/verify.ps1 -Scope backend` → exit 0 (15 application tests, OpenAPI lint, Compose config, PostgreSQL no-host-port assertion). This is only the HTTP key-presence/length check; transactional replay, canonical-body conflict, and delivery rollback were not run and remain pending T003/T011/T014/T017/T018. No domain or persistence files changed.
