@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
@@ -64,8 +65,8 @@ public class ApiExceptionHandler {
         return response(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_BODY", "Request body is missing or invalid", null, request);
     }
 
-    @ExceptionHandler(NoResourceFoundException.class)
-    ResponseEntity<ApiProblem> handleNotFound(NoResourceFoundException exception, HttpServletRequest request) {
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    ResponseEntity<ApiProblem> handleNotFound(Exception exception, HttpServletRequest request) {
         return response(HttpStatus.NOT_FOUND, "NOT_FOUND", "The requested resource was not found", null, request);
     }
 

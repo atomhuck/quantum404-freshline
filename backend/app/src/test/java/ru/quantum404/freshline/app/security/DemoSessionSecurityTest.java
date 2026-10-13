@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(properties = {
         "FRESHLINE_DEMO_ACCESS_CODE=test-access-code",
         "DEMO_MODE=true",
+        "spring.mvc.throw-exception-if-no-handler-found=true",
         "server.servlet.session.cookie.name=FRESHLINE_SESSION"
 })
 class DemoSessionSecurityTest {
@@ -134,6 +135,25 @@ class DemoSessionSecurityTest {
                 .andExpect(jsonPath("$.code", is("INTERNAL_ERROR")))
                 .andExpect(jsonPath("$.message", not(containsString("internal-private-detail"))))
                 .andExpect(content().string(not(containsString("internal-private-detail"))));
+    }
+
+    @Test
+    void unknownWriteRouteUsesProblemContractAfterSessionAndCsrfPass() throws Exception {
+        MvcResult login = mockMvc.perform(post("/api/v1/session")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"accessCode\":\"test-access-code\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+        JsonNode sessionResponse = objectMapper.readTree(login.getResponse().getContentAsByteArray());
+        String csrfToken = sessionResponse.path("csrfToken").asText();
+        var session = (org.springframework.mock.web.MockHttpSession) login.getRequest().getSession(false);
+
+        mockMvc.perform(post("/api/v1/test/missing")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code", is("NOT_FOUND")))
+                .andExpect(jsonPath("$.requestId").isNotEmpty());
     }
 
     @TestConfiguration
