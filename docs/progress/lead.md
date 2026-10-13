@@ -4,11 +4,11 @@ owner: Codex desktop lead
 session_id: 42241754-8332-477d-af91-c46606b51966
 branch: codex/lead
 current_task: T019
-substep: "T054 production startup guard and Compose PostgreSQL exposure assertion verified and pushed; T019 awaits Data/Orders artifacts"
+substep: "Remote audit 2026-10-13T19:07:29Z: lead plan/progress/handoff match origin; T019 awaits Data/Orders artifacts; Docker API/PG containers are stopped"
 last_verified_code_commit: c67bf8b7cb7db95501b9408d69eb8033c0793211
 checkpoint: WIP
-next_step: "Implement T019 transactional POST /deliveries when T003/T011/T014/T017/T018 are published; verify idempotent replay and payload-hash conflict on PostgreSQL, then expose stock with T022; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T18:31:30Z
+next_step: "After H-02 owners publish T003/T011/T014/T017/T018, fetch and confirm their exact SHAs, then implement T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks; continue to T022. Rerun full Compose/CI when Web/simulator contexts arrive"
+heartbeat_utc: 2026-10-13T19:07:29Z
 human_required: [H-02]
 ---
 
@@ -58,3 +58,5 @@ T054 code checkpoints `a6b7ac3197d9b3dbe08e611f76c9d211500263cc` and `c67bf8b7cb
 Hosted pull-request check for T054 final code `c67bf8b7cb7db95501b9408d69eb8033c0793211`: Actions run `38447042936`; Backend/OpenAPI/Compose job succeeded, including PostgreSQL host-port assertion. Full-stack job failed at the absent `frontend/package.json`; no simulator/frontend product validation occurred. The status-only checkpoint is newer than that tested code but adds no runtime changes.
 
 T006 Compose/config checkpoint `6a257f9f996a786bf72422196d0f213363049b06` was rechecked with ephemeral validation-only environment values: `docker compose config --quiet` → exit 0; `docker compose config --services` → postgres/api/web/caddy; `docker compose --profile demo config --services` → postgres/api/web/caddy/simulator; `git check-ignore .env` confirms private env exclusion and `git ls-files .env` returns no tracked secret file. The Compose model has no PostgreSQL host port mapping. Existing Docker API+PostgreSQL 17.11 health/HTTP smoke remains the runtime evidence. Full web/simulator startup remains NOT RUN because their build contexts are absent; this does not count as T050 or a vertical product PASS.
+
+Ownership refresh 2026-10-13T19:07:29Z: `git fetch origin --prune`; local `HEAD` and `origin/codex/lead` both resolve to `690bcb86951d5b95056e246717fbc893a7ae30c6`; worktree was clean before this status update. `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match that remote revision; there has been no handoff, so the journal correctly remains empty. Remote Data/Orders/Web/QA branches all resolve to baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; their progress files remain `FREE`, with T003/T011/T014/T017/T018 and T002/T004 unpublished. Docker Engine `29.8.0` responds; `docker compose ps --all` with process-only validation values exits 0 and shows API `Exited (143)` and PostgreSQL `Exited (0)`. No private `.env` was created. Same owner/session `42241754-8332-477d-af91-c46606b51966` retains the active claim; H-02 is still the concrete external dependency. G0/G1/G2/G3/release remain NOT RUN; no product vertical is claimed.
