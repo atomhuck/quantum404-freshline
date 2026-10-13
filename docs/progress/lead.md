@@ -1,14 +1,14 @@
 ---
-state: FREE
-owner: unassigned
-session_id: null
+state: ACTIVE
+owner: Codex desktop lead
+session_id: 42241754-8332-477d-af91-c46606b51966
 branch: codex/lead
 current_task: T001
-substep: "Create Java scaffold and freeze G0 contract"
+substep: "Claimed after origin/codex/lead audit; G0 validation next"
 last_verified_code_commit: null
 checkpoint: NOT_RUN
-next_step: "Claim lane; verify repository/contract, then execute T001/T005"
-heartbeat_utc: null
+next_step: "Validate current OpenAPI and build tool availability; create Java 21 Maven scaffold, then publish contract freeze and CI/Compose checkpoints"
+heartbeat_utc: 2026-10-13T15:27:33Z
 human_required: []
 ---
 
@@ -18,6 +18,8 @@ human_required: []
 
 | Task | State | Evidence |
 |---|---|---|
-| T001/T005/T006/T009/T010 | TODO | No product code exists yet |
+| T001/T005/T006/T009/T010 | ACTIVE | Claim only; code and G0 checks not run yet |
 
 Записывать точные команды/exit code, опубликованный SHA и next_step после каждого шага.
+
+Claim: git fetch origin and remote progress/journal audit at 43bbc7b; branch claim pushed before product code. Session 42241754-8332-477d-af91-c46606b51966; 2026-10-13T15:27:33Z.
