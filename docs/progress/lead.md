@@ -8,8 +8,8 @@ substep: "T013 session, CSRF and safe API errors implemented; delivery integrati
 last_verified_code_commit: 4dbd058c8c003c8556a73d0c9cefe03020efcc18
 checkpoint: WIP
 next_step: "Wire T019 delivery transaction to PostgreSQL after T003/T011/T014/T018 are published; verify replay and payload-hash conflict, then expose stock; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T16:58:40Z
-human_required: [H-02]
+heartbeat_utc: 2026-10-13T17:05:48Z
+human_required: [H-02, H-10]
 ---
 
 # Lead progress
@@ -43,3 +43,5 @@ G0 snapshot: OpenAPI v1.0.0 is validated and frozen at the SHA above; no Java po
 T013 runtime behavior checks now cover invalid/blank access codes, safe Problem responses, request IDs, rate limiting, session persistence, CSRF rejection/acceptance, missing-route errors, and internal-error redaction (8 passing tests). Idempotency conflict/replay, delivery-to-stock integration, FEFO, SSE replay, and release smoke remain NOT RUN because their persistence/domain endpoints and shared port artifacts are absent. The delivery → PostgreSQL → stock → FEFO order → stop-list → browser vertical is not yet present; no mock counts as completion.
 
 Claim: git fetch origin and remote progress/journal audit at 43bbc7b; branch claim pushed before product code. Session 42241754-8332-477d-af91-c46606b51966; 2026-10-13T15:27:33Z.
+
+Hosted push check for checkpoint `c1b8392a00b60aac1275e854c5cea5b917880c84`: Actions run `38434952379`; Backend, OpenAPI, and Compose config succeeded, while Full-stack verification failed because `frontend/package.json` is missing. CI logs report `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.` Local backend scope remains passing; overall G0 and release gates remain NOT RUN.
