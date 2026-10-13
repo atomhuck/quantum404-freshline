@@ -7,8 +7,8 @@ current_task: T019
 substep: "T013 session, CSRF and safe API errors implemented; draft PR #1 opened; delivery integration awaits Data/Orders artifacts"
 last_verified_code_commit: 4dbd058c8c003c8556a73d0c9cefe03020efcc18
 checkpoint: WIP
-next_step: "Wire T019 delivery transaction to PostgreSQL after T003/T011/T014/T018 are published; verify replay and payload-hash conflict, then expose stock; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T17:13:39Z
+next_step: "Wire T019 delivery transaction to PostgreSQL after T003/T011/T014/T017/T018 are published; verify replay and payload-hash conflict, then expose stock; rerun full Compose/CI when Web/simulator contexts arrive"
+heartbeat_utc: 2026-10-13T17:18:05Z
 human_required: [H-02]
 ---
 
