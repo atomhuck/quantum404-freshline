@@ -10,7 +10,7 @@
 - [ ] T003 [P] DE: create versioned baseline `backend/persistence/src/main/resources/db/migration/V1__init.sql` according to `data-model.md`, without sample data; migration works twice on Testcontainers PG.
 - [ ] T004 [P] QA: create `qa/traceability.md` mapping FR-001…018 to case IDs and owners, with PASS/FAIL/NOT RUN columns; no fictional PASS.
 - [x] T005 Lead: validate and freeze `contracts/openapi.yaml` (lint, duplicate paths, decimal/date examples), set version/contract SHA in `docs/progress/lead.md`; all lanes receive the same commit.
-- [ ] T006 [P] Lead: add `.env.example`, `compose.yaml`, `deploy/Caddyfile` with API/web/PG/services and demo profile; no secrets or public DB port.
+- [x] T006 [P] Lead: add `.env.example`, `compose.yaml`, `deploy/Caddyfile` with API/web/PG/services and demo profile; no secrets or public DB port.
 - [ ] T007 [P] Fullstack: define visual tokens, responsive shell, navigation and states in `frontend/src/theme.ts` and `frontend/src/App.tsx` per `docs/FRONTEND.md`.
 - [ ] T008 [P] QA: write human-readable cases for delivery/order/expiry/idempotency in `qa/cases/core.md` before code appears.
 - [x] T009 Lead: add `.github/workflows/ci.yaml` and `scripts/verify.ps1`/`scripts/verify.sh` for Maven, frontend, YAML, Compose; commands fail honestly when code missing.
