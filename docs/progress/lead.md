@@ -8,7 +8,7 @@ substep: "T013 session, CSRF and safe API errors implemented; draft PR #1 opened
 last_verified_code_commit: 4dbd058c8c003c8556a73d0c9cefe03020efcc18
 checkpoint: WIP
 next_step: "Wire T019 delivery transaction to PostgreSQL after T003/T011/T014/T018 are published; verify replay and payload-hash conflict, then expose stock; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T17:11:45Z
+heartbeat_utc: 2026-10-13T17:13:39Z
 human_required: [H-02]
 ---
 
@@ -34,7 +34,7 @@ T006/T009 checks: `docker compose config --quiet` with ephemeral validation-only
 
 Remote lane audit on 2026-10-13 after Actions run `38425144284`: `git fetch origin --prune`; lead docs `lanes/lead.md`, `progress/lead.md`, and `handoffs/lead.md` matched `origin/codex/lead`. Orders, Data, Web, and QA progress remain `FREE` at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; no migration, port agreement, frontend, or QA matrix has been published. `handoffs/lead.md` still correctly has no entries because no handoff occurred.
 
-Integration attempt 1: creating a draft PR through the GitHub connector returned HTTP 403, `Resource not accessible by integration`; no PR was created by that attempt. After the user completed GitHub sign-in in the visible browser, draft PR [#1](https://github.com/atomhuck/quantum404-freshline/pull/1) was created from `codex/lead` to `codex/integration`, head `222455f7b59847b62e18caf0871d342e15f1ffb7`. It is an early review checkpoint and remains Draft; it is not merged. At creation, GitHub reported no merge conflicts. `origin/codex/integration` was `43bbc7bcb6db43da03c556fd5c46b1b03c099280`.
+Integration attempt 1: creating a draft PR through the GitHub connector returned HTTP 403, `Resource not accessible by integration`; no PR was created by that attempt. After the user completed GitHub sign-in in the visible browser, draft PR [#1](https://github.com/atomhuck/quantum404-freshline/pull/1) was created from `codex/lead` to `codex/integration`, initial head `222455f7b59847b62e18caf0871d342e15f1ffb7`; the status follow-up advanced its current head to `0d929bb3c58573d8a4b300cea0eeadf86044b2ec`. It is an early review checkpoint and remains Draft; it is not merged. GitHub reports it mergeable with no conflicts. `origin/codex/integration` is `43bbc7bcb6db43da03c556fd5c46b1b03c099280`.
 
 T009 follow-up code `eaabe229504b3ac6e51aff16d597770c234eeeaa`: upgraded `actions/checkout` to v7, `actions/setup-java` to v6, and `actions/setup-node` to v7 after hosted CI deprecation warnings; disabled setup-node's automatic package-manager cache. `scripts/verify.ps1 -Scope backend` → exit 0; PyYAML parse of `.github/workflows/ci.yaml` and `git diff --check` → exit 0. Hosted run `38426125849` confirms all three updated actions and the backend job succeed; the full-stack job still stops at missing `frontend/package.json`.
 
@@ -47,3 +47,5 @@ Claim: git fetch origin and remote progress/journal audit at 43bbc7b; branch cla
 Hosted push check for checkpoint `c1b8392a00b60aac1275e854c5cea5b917880c84`: Actions run `38434952379`; Backend, OpenAPI, and Compose config succeeded, while Full-stack verification failed because `frontend/package.json` is missing. CI logs report `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.` Local backend scope remains passing; overall G0 and release gates remain NOT RUN.
 
 Hosted checks for PR head `222455f7b59847b62e18caf0871d342e15f1ffb7`: push run `38435979522` and pull-request run `38436344436`; backend/OpenAPI/Compose succeeded in both, and full-stack verification failed in both at the absent `frontend/package.json` (job log: `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.`). Local backend verification and Docker API/PostgreSQL smoke remain passing. G0 and release remain NOT RUN. H-10 is complete; H-02 remains active.
+
+Hosted check for the published follow-up head `0d929bb3c58573d8a4b300cea0eeadf86044b2ec`: pull-request run `38436737552`; backend/OpenAPI/Compose passed, full-stack verification failed with the same absent `frontend/package.json` (exit 1). This is a docs-only status commit over the T013 code commit `4dbd058c8c003c8556a73d0c9cefe03020efcc18`; T013 remains locally verified, while G0 and release remain NOT RUN.
