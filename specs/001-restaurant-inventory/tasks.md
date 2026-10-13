@@ -89,7 +89,7 @@
 
 - [ ] T052 [P] QA: complete FR matrix, security/negative/regression cases in `qa/traceability.md` and `qa/cases/`; report P0 defects with repro, commit, expected/actual.
 - [ ] T053 [P] DE: measure indexes and transaction lock behaviour, run backup/restore on spare volumes; record actual outputs in `docs/progress/data.md`.
-- [ ] T054 Lead: enforce production security/config startup checks and secret redaction in `backend/app/src/main/java/ru/quantum404/freshline/app/security/`; no public DB, no default password.
+- [x] T054 Lead: enforce production security/config startup checks and secret redaction in `backend/app/src/main/java/ru/quantum404/freshline/app/security/`; no public DB, no default password.
 - [ ] T055 Lead: create `scripts/smoke.ps1`/`.sh` for delivery→order→stop-list→offer + repeat key; fail on unexpected result.
 - [ ] T056 QA+BE-orders: execute 100 contender tests, expiry rollover, API restart, DB outage and recovery on real Compose; save bounded evidence in `docs/progress/qa.md`.
 - [ ] T057 Lead: deploy to VDS with `deploy/compose.prod.yaml`, Caddy HTTPS and DNS/sslip alias, then verify external URL from another network.
