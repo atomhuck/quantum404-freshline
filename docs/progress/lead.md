@@ -8,7 +8,7 @@ substep: "Hosted backend CI passes with upgraded actions; full stack and Docker 
 last_verified_code_commit: eaabe229504b3ac6e51aff16d597770c234eeeaa
 checkpoint: WIP
 next_step: "Coordinate T014 against frozen OpenAPI v1 with Orders/Data; integrate delivery-to-PostgreSQL when T003 and the port agreement are published; retry Compose/PostgreSQL smoke after H-09; rerun full CI when Web/simulator artifacts arrive"
-heartbeat_utc: 2026-10-13T15:56:54Z
+heartbeat_utc: 2026-10-13T15:58:55Z
 human_required: [H-02, H-09]
 ---
 
@@ -32,6 +32,8 @@ T005 result: `npx --yes @redocly/cli@2.63.0 lint --config=redocly.yaml contracts
 T006/T009 checks: `docker compose config --quiet` with ephemeral validation-only env values → exit 0 (no containers started); YAML parse of `compose.yaml`, `redocly.yaml`, and `.github/workflows/ci.yaml` → exit 0; PowerShell and Git Bash `scripts/verify.* backend` → exit 0; full PowerShell verify → exit 1 because `frontend/package.json` is absent. Actions run `38426125849` completed with “Backend, OpenAPI, and Compose config” success and “Full-stack verification” failure at that missing frontend file; this is not a full-stack PASS. Docker manifests for PostgreSQL/Caddy/Maven/Temurin image tags → exit 0. Docker Desktop processes exist, but `com.docker.service` is stopped, `Start-Service` could not open it, and `docker info` cannot connect to `dockerDesktopLinuxEngine`; image build, Compose startup, and PostgreSQL smoke are `NOT RUN` (H-09).
 
 Remote lane audit on 2026-10-13 after Actions run `38425144284`: `git fetch origin --prune`; lead docs `lanes/lead.md`, `progress/lead.md`, and `handoffs/lead.md` matched `origin/codex/lead`. Orders, Data, Web, and QA progress remain `FREE` at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; no migration, port agreement, frontend, or QA matrix has been published. `handoffs/lead.md` still correctly has no entries because no handoff occurred.
+
+Integration attempt: creating a draft PR from `codex/lead` to `codex/integration` returned GitHub API HTTP 403, `Resource not accessible by integration`; no PR was created. `origin/codex/integration` remains at `43bbc7bcb6db43da03c556fd5c46b1b03c099280`. Retry the first integration after T003/T014 artifacts are available, through an enabled PR route or the repository's permitted merge workflow.
 
 T009 follow-up code `eaabe229504b3ac6e51aff16d597770c234eeeaa`: upgraded `actions/checkout` to v7, `actions/setup-java` to v6, and `actions/setup-node` to v7 after hosted CI deprecation warnings; disabled setup-node's automatic package-manager cache. `scripts/verify.ps1 -Scope backend` → exit 0; PyYAML parse of `.github/workflows/ci.yaml` and `git diff --check` → exit 0. Hosted run `38426125849` confirms all three updated actions and the backend job succeed; the full-stack job still stops at missing `frontend/package.json`.
 
