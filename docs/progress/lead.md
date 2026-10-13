@@ -3,12 +3,12 @@ state: ACTIVE
 owner: Codex desktop lead
 session_id: 42241754-8332-477d-af91-c46606b51966
 branch: codex/lead
-current_task: T019
-substep: "T013 session, CSRF and safe API errors implemented; draft PR #1 opened; delivery integration awaits Data/Orders artifacts"
+current_task: T054
+substep: "Remote claim refreshed on the existing Lead session; T019 is blocked on unpublished Data/Orders dependencies, so proceeding with independent production security/config guards"
 last_verified_code_commit: 4dbd058c8c003c8556a73d0c9cefe03020efcc18
 checkpoint: WIP
-next_step: "Wire T019 delivery transaction to PostgreSQL after T003/T011/T014/T017/T018 are published; verify replay and payload-hash conflict, then expose stock; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-13T17:18:05Z
+next_step: "Complete T054 fail-closed production configuration checks with negative tests, then resume T019 as soon as T003/T011/T014/T017/T018 are published; rerun full Compose/CI when Web/simulator contexts arrive"
+heartbeat_utc: 2026-10-13T18:20:33Z
 human_required: [H-02]
 ---
 
@@ -49,3 +49,5 @@ Hosted push check for checkpoint `c1b8392a00b60aac1275e854c5cea5b917880c84`: Act
 Hosted checks for PR head `222455f7b59847b62e18caf0871d342e15f1ffb7`: push run `38435979522` and pull-request run `38436344436`; backend/OpenAPI/Compose succeeded in both, and full-stack verification failed in both at the absent `frontend/package.json` (job log: `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.`). Local backend verification and Docker API/PostgreSQL smoke remain passing. G0 and release remain NOT RUN. H-10 is complete; H-02 remains active.
 
 Hosted check for the published follow-up head `0d929bb3c58573d8a4b300cea0eeadf86044b2ec`: pull-request run `38436737552`; backend/OpenAPI/Compose passed, full-stack verification failed with the same absent `frontend/package.json` (exit 1). This is a docs-only status commit over the T013 code commit `4dbd058c8c003c8556a73d0c9cefe03020efcc18`; T013 remains locally verified, while G0 and release remain NOT RUN.
+
+Ownership refresh 2026-10-13T18:20:33Z: `git fetch origin --prune`; local branch and `origin/codex/lead` both resolve to `e306a8e4dc5ad80e7602f0ea708043b73ba31751`; working tree was clean. `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match that remote revision. Remote `codex/data`, `codex/orders`, `codex/web`, `codex/qa`, and `codex/integration` remain at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; their code/progress artifacts for T003/T011/T014/T017/T018, frontend, and QA remain unpublished. This is a refresh of the same owner/session `42241754-8332-477d-af91-c46606b51966`, not a takeover; H-02 remains the required team-owner action. T019 is blocked on those cross-lane artifacts. Continue with independent Lead-owned production security/config validation (T054) while preserving the delivery→PG path as the next product integration.
