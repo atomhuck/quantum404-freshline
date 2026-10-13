@@ -12,7 +12,7 @@
 | H-06 | При аварийной передаче сообщить, что прежний агент/ноутбук остановлен, если progress всё ещё ACTIVE | только при аварии | агент делает безопасный takeover и пишет причину |
 | H-07 | Принять продуктовое решение, если эксперт изменит бизнес-правила или обнаружится конфликт в ТЗ | только при необходимости | агент приносит конкретные варианты/влияние, вносит ADR и тесты |
 | H-08 | Финально открыть продукт с другого устройства и отправить repo URL + HTTPS URL до срока | 16–17.10 | агент проверит links, SHA, demo data, QA и даст короткий текст подачи |
-| H-09 | Запустить Linux Engine в Docker Desktop с доступными на машине правами и сообщить, когда `docker info` завершается с exit 0 | до image build / Compose / PostgreSQL smoke T006 | Docker Desktop processes exist, `com.docker.service` is stopped, service start failed in this session; config-only Compose validation passes, runtime checks remain `NOT RUN` |
+| H-09 | Запустить Linux Engine в Docker Desktop с доступными на машине правами и сообщить, когда `docker info` завершается с exit 0 | до image build / Compose / PostgreSQL smoke T006 | **Выполнено 2026-10-13:** Docker Engine 29.8.0 отвечает; API image собран, PostgreSQL 17.11 прошёл health-check и `pg_isready`; см. свежие команды и HTTP smoke в `docs/progress/lead.md` |
 
 **Домен:** покупать не нужно. Достаточно стабильного HTTPS-имени, например поддомен существующего домена или временный адрес по IP через DNS-alias и сертификат. Свой домен упростит запоминание и сохранит URL после смены IP, но за пять дней не должен блокировать MVP. Если VDS уже используется для прошлого проекта, агент сначала проверит свободные порты и действующий proxy, не нарушая его работу.
 
