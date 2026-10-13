@@ -1,0 +1,9 @@
+extends:
+  - recommended
+
+rules:
+  # The project has not selected a code license; do not infer one in API metadata.
+  info-license: off
+  # Read-only snapshots have no client-supplied query input. Keep the linter from
+  # requiring artificial 4xx responses solely to satisfy this style rule.
+  operation-4xx-response: off
