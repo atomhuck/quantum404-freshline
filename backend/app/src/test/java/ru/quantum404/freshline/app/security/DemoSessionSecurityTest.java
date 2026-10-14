@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,8 +22,9 @@ import ru.quantum404.freshline.app.api.ApiProblemWriter;
 import ru.quantum404.freshline.app.api.RequestIdFilter;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -203,6 +205,17 @@ class DemoSessionSecurityTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code", is("NOT_FOUND")))
                 .andExpect(jsonPath("$.requestId").isNotEmpty());
+    }
+
+    @Test
+    void unsupportedMethodUsesSafeProblemContract() throws Exception {
+        mockMvc.perform(get("/api/v1/session"))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code", is("METHOD_NOT_ALLOWED")))
+                .andExpect(jsonPath("$.requestId").isNotEmpty())
+                .andExpect(header().string(HttpHeaders.ALLOW, containsString("POST")))
+                .andExpect(header().exists(RequestIdFilter.HEADER));
     }
 
     @TestConfiguration
