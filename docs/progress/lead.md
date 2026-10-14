@@ -8,7 +8,7 @@ substep: "T019 preflight remains the only delivery-related code; transactional u
 last_verified_code_commit: 9315713d133daaf897e1e8fbc58ab80f8dbfcb13
 checkpoint: WIP
 next_step: "After H-02 assigns owners and Data publishes T003/T012/T018/T021, Orders publishes T011/T014/T017, Web publishes T002, and QA publishes T004, fetch exact SHAs and freeze Java ports; then implement transactional T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks. Continue to T022 after T021; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-14T14:05:21Z
+heartbeat_utc: 2026-10-14T14:07:05Z
 human_required: [H-02]
 ---
 
@@ -87,3 +87,5 @@ Content-type error-mapping follow-up 2026-10-14T14:01:52Z: code commit `293338ba
 Malformed-body contract-test follow-up 2026-10-14T14:03:27Z: test-only code commit `9315713d133daaf897e1e8fbc58ab80f8dbfcb13` adds a negative check that malformed JSON to `POST /api/v1/session` returns 400 `INVALID_REQUEST_BODY`, JSON Problem, requestId, and `X-Request-Id`. Focused Maven command `mvn -B -q -f backend/pom.xml -pl app -am "-Dtest=DemoSessionSecurityTest" "-Dsurefire.failIfNoSpecifiedTests=false" test` → exit 0 (10 tests); `scripts/verify.ps1 -Scope backend` → exit 0 (18 application tests, OpenAPI lint, Compose config, PostgreSQL host-port assertion). Full-stack was excluded. Remote check at 2026-10-14T14:03:27Z showed published Lead head `d406ea180fdd59f5bcdd87d2a6b026212d4d86aa`; Data/Orders/Web/QA/Integration remained at `43bbc7bcb6db43da03c556fd5c46b1b03c099280`, so H-02 remains pending. This verifies an existing Lead-owned error response, does not alter the frozen contract, and does not change G0/G1/G2/G3/RELEASE (all NOT RUN).
 
 Hosted PR run `38577183271` checked remote checkpoint `37dfdd2bb83eb800ec3bc5cc2a2a6c1e4276fcc4` (code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`). Backend/OpenAPI/Compose job succeeded on Temurin Java 21: 18 app tests, OpenAPI lint, Compose config, and PostgreSQL no-host-port assertion passed. Full-stack job failed at the absent `frontend/package.json` with `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.` This does not validate frontend/simulator or close a release gate. G0/G1/G2/G3/RELEASE remain NOT RUN; PR #1 remains Draft.
+
+Hosted PR run `38577473301` checked the latest published status checkpoint `2ffa5e088ced7d0b8172c7279b19d1c059e9c45a` (verified code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`). Backend/OpenAPI/Compose job succeeded: Temurin Java 21, 18 app tests, OpenAPI lint, Compose config, and PostgreSQL no-host-port assertion. Full-stack job failed at absent `frontend/package.json`; frontend/simulator remain unverified. No G0/G1/G2/G3/RELEASE gate is PASS.
