@@ -230,6 +230,18 @@ class DemoSessionSecurityTest {
                 .andExpect(header().exists(RequestIdFilter.HEADER));
     }
 
+    @Test
+    void malformedJsonUsesSafeProblemContract() throws Exception {
+        mockMvc.perform(post("/api/v1/session")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code", is("INVALID_REQUEST_BODY")))
+                .andExpect(jsonPath("$.requestId").isNotEmpty())
+                .andExpect(header().exists(RequestIdFilter.HEADER));
+    }
+
     @TestConfiguration
     static class ProbeConfiguration {
         @Bean
