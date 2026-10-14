@@ -218,6 +218,18 @@ class DemoSessionSecurityTest {
                 .andExpect(header().exists(RequestIdFilter.HEADER));
     }
 
+    @Test
+    void unsupportedContentTypeUsesSafeProblemContract() throws Exception {
+        mockMvc.perform(post("/api/v1/session")
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("access-code"))
+                .andExpect(status().isUnsupportedMediaType())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code", is("UNSUPPORTED_MEDIA_TYPE")))
+                .andExpect(jsonPath("$.requestId").isNotEmpty())
+                .andExpect(header().exists(RequestIdFilter.HEADER));
+    }
+
     @TestConfiguration
     static class ProbeConfiguration {
         @Bean
