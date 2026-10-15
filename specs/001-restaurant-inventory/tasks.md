@@ -5,22 +5,22 @@
 
 ## Phase 1 — Setup (G0, 12–13 October)
 
-- [ ] T001 [P] Lead: create Maven multi-module `backend/pom.xml`, `backend/domain/pom.xml`, `backend/persistence/pom.xml`, `backend/app/pom.xml` with Java 21 and pinned Spring Boot BOM; `mvn verify` builds empty modules.
+- [x] T001 [P] Lead: create Maven multi-module `backend/pom.xml`, `backend/domain/pom.xml`, `backend/persistence/pom.xml`, `backend/app/pom.xml` with Java 21 and pinned Spring Boot BOM; `mvn verify` builds empty modules.
 - [ ] T002 [P] Fullstack: create `frontend/package.json`, lockfile, Vite/React/TS/Chakra provider and `frontend/src/main.tsx`; typecheck/build pass.
 - [ ] T003 [P] DE: create versioned baseline `backend/persistence/src/main/resources/db/migration/V1__init.sql` according to `data-model.md`, without sample data; migration works twice on Testcontainers PG.
 - [ ] T004 [P] QA: create `qa/traceability.md` mapping FR-001…018 to case IDs and owners, with PASS/FAIL/NOT RUN columns; no fictional PASS.
-- [ ] T005 Lead: validate and freeze `contracts/openapi.yaml` (lint, duplicate paths, decimal/date examples), set version/contract SHA in `docs/progress/lead.md`; all lanes receive the same commit.
-- [ ] T006 [P] Lead: add `.env.example`, `compose.yaml`, `deploy/Caddyfile` with API/web/PG/services and demo profile; no secrets or public DB port.
+- [x] T005 Lead: validate and freeze `contracts/openapi.yaml` (lint, duplicate paths, decimal/date examples), set version/contract SHA in `docs/progress/lead.md`; all lanes receive the same commit.
+- [x] T006 [P] Lead: add `.env.example`, `compose.yaml`, `deploy/Caddyfile` with API/web/PG/services and demo profile; no secrets or public DB port.
 - [ ] T007 [P] Fullstack: define visual tokens, responsive shell, navigation and states in `frontend/src/theme.ts` and `frontend/src/App.tsx` per `docs/FRONTEND.md`.
 - [ ] T008 [P] QA: write human-readable cases for delivery/order/expiry/idempotency in `qa/cases/core.md` before code appears.
-- [ ] T009 Lead: add `.github/workflows/ci.yaml` and `scripts/verify.ps1`/`scripts/verify.sh` for Maven, frontend, YAML, Compose; commands fail honestly when code missing.
+- [x] T009 Lead: add `.github/workflows/ci.yaml` and `scripts/verify.ps1`/`scripts/verify.sh` for Maven, frontend, YAML, Compose; commands fail honestly when code missing.
 - [ ] T010 Lead+DE: publish first vertical CI/Compose checkpoint in `docs/progress/lead.md`, contract version and exact next substep. G0 is done only after all of T001–T009 are verified.
 
 ## Phase 2 — Foundational domain/data gates
 
 - [ ] T011 [P] BE-orders: define domain models and repository ports in `backend/domain/src/main/java/ru/quantum404/freshline/domain/`; include `Clock`, base units, positive decimal and expiry policy.
 - [ ] T012 [P] DE: add Flyway-backed PostgreSQL/Testcontainers harness in `backend/persistence/src/test/java/` and assert FK/CHECK/UNIQUE plus migration-on-empty/restart.
-- [ ] T013 Lead: implement API error mapping, request IDs, validation, security/session/CSRF in `backend/app/src/main/java/ru/quantum404/freshline/app/`; test unauthorized write and safe errors.
+- [x] T013 Lead: implement API error mapping, request IDs, validation, security/session/CSRF in `backend/app/src/main/java/ru/quantum404/freshline/app/`; test unauthorized write and safe errors.
 - [ ] T014 DE+BE-orders: agree repository port signatures in `backend/domain/src/main/java/ru/quantum404/freshline/domain/port/` and one integration fixture; no same-file simultaneous edits.
 - [ ] T015 [P] DE: implement row locking and transaction helper in `backend/persistence/src/main/java/ru/quantum404/freshline/persistence/` with sorted ingredient/batch lock order and bounded timeout.
 - [ ] T016 [P] Fullstack: generate typed client from `contracts/openapi.yaml` into `frontend/src/api/`; handle `Problem` and API-mode badge.
@@ -89,7 +89,7 @@
 
 - [ ] T052 [P] QA: complete FR matrix, security/negative/regression cases in `qa/traceability.md` and `qa/cases/`; report P0 defects with repro, commit, expected/actual.
 - [ ] T053 [P] DE: measure indexes and transaction lock behaviour, run backup/restore on spare volumes; record actual outputs in `docs/progress/data.md`.
-- [ ] T054 Lead: enforce production security/config startup checks and secret redaction in `backend/app/src/main/java/ru/quantum404/freshline/app/security/`; no public DB, no default password.
+- [x] T054 Lead: enforce production security/config startup checks and secret redaction in `backend/app/src/main/java/ru/quantum404/freshline/app/security/`; no public DB, no default password.
 - [ ] T055 Lead: create `scripts/smoke.ps1`/`.sh` for delivery→order→stop-list→offer + repeat key; fail on unexpected result.
 - [ ] T056 QA+BE-orders: execute 100 contender tests, expiry rollover, API restart, DB outage and recovery on real Compose; save bounded evidence in `docs/progress/qa.md`.
 - [ ] T057 Lead: deploy to VDS with `deploy/compose.prod.yaml`, Caddy HTTPS and DNS/sslip alias, then verify external URL from another network.

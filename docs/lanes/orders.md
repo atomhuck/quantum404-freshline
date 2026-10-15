@@ -1,6 +1,6 @@
 # План полосы orders — Java домен, FEFO, конкуренция
 
-**Ветка:** `codex/orders`. **Зона:** `backend/domain/` и согласованные интеграционные тесты. **Статус:** [progress/orders](../progress/orders.md). **Передачи:** [handoffs/orders](../handoffs/orders.md). **Промпт:** [backend-orders](../../prompts/backend-orders.md).
+**Ветка:** `codex/orders`. **Зона:** `backend/domain/` и согласованные интеграционные тесты. **Таблица всех задач:** [tracking/orders](../tracking/orders.md). **Статус:** [progress/orders](../progress/orders.md). **Передачи:** [handoffs/orders](../handoffs/orders.md). **Промпт:** [backend-orders](../../prompts/backend-orders.md).
 
 ## Очередь и точки стыка
 

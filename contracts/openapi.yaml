@@ -2,21 +2,27 @@ openapi: 3.0.3
 info:
   title: FreshLine API
   version: 1.0.0
-  description: Contract-first API for one synthetic restaurant demo. Mutations require session and Idempotency-Key.
+  description: Contract-first API for one synthetic restaurant demo. Business writes require a session, CSRF token, and Idempotency-Key; session exchange is the bootstrap exception.
 servers:
   - url: /api/v1
 tags:
   - name: catalog
+    description: Public read-only views of the synthetic restaurant catalogue.
   - name: stock
+    description: Delivery intake and batch-level inventory views.
   - name: orders
+    description: Idempotent all-or-nothing restaurant orders.
   - name: insight
+    description: Explainable availability, expiry, and replenishment views.
   - name: demo
+    description: Demo session bootstrap and committed change stream.
 paths:
   /session:
     post:
       tags: [demo]
       operationId: createDemoSession
       summary: Exchange demo access code for a Secure HttpOnly session and CSRF token
+      security: []
       requestBody:
         required: true
         content:
@@ -36,12 +42,16 @@ paths:
                 required: [csrfToken]
                 properties:
                   csrfToken: {type: string}
+              example:
+                csrfToken: example-csrf-token
         '401': {description: Invalid access code}
         '429': {description: Rate limit}
   /ingredients:
     get:
       tags: [catalog]
       operationId: listIngredients
+      summary: List ingredients and their base units
+      security: []
       responses:
         '200':
           description: Ingredient catalogue
@@ -54,6 +64,8 @@ paths:
     get:
       tags: [catalog]
       operationId: listDishes
+      summary: List dishes with their current recipe versions
+      security: []
       responses:
         '200':
           description: Current recipes
@@ -66,6 +78,7 @@ paths:
     post:
       tags: [stock]
       operationId: receiveDelivery
+      summary: Receive all lines of a delivery as inventory batches
       security: [{demoSession: []}]
       parameters:
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -75,12 +88,40 @@ paths:
         content:
           application/json:
             schema: {$ref: '#/components/schemas/DeliveryRequest'}
+            examples:
+              calculatedExpiry:
+                summary: Expiry date calculated from manufacture date and shelf life
+                value:
+                  supplier: Demo supplier
+                  deliveryNumber: D-2026-0001
+                  receivedAt: '2026-10-13T09:00:00Z'
+                  lines:
+                    - ingredientId: 11111111-1111-4111-8111-111111111111
+                      quantity: '1250.500'
+                      manufacturedOn: '2026-10-12'
+                      shelfLifeDays: 7
+                      expirySource: calculated
+              supplierLabelExpiry:
+                summary: Expiry date copied from a supplier label
+                value:
+                  supplier: Demo supplier
+                  deliveryNumber: D-2026-0002
+                  receivedAt: '2026-10-13T09:05:00Z'
+                  lines:
+                    - ingredientId: 11111111-1111-4111-8111-111111111111
+                      quantity: '800.000'
+                      supplierExpiresOn: '2026-10-20'
+                      expirySource: supplier_label
       responses:
         '201':
           description: Created delivery and batches
           content:
             application/json:
               schema: {$ref: '#/components/schemas/DeliveryResult'}
+              example:
+                id: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+                deliveryNumber: D-2026-0001
+                batchIds: [bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb]
         '400': {$ref: '#/components/responses/BadRequest'}
         '401': {$ref: '#/components/responses/Unauthorized'}
         '409': {$ref: '#/components/responses/Conflict'}
@@ -88,6 +129,8 @@ paths:
     get:
       tags: [stock]
       operationId: getStock
+      summary: Get aggregate and batch-level stock
+      security: []
       responses:
         '200':
           description: Aggregate and batch-level stock
@@ -96,10 +139,26 @@ paths:
               schema:
                 type: array
                 items: {$ref: '#/components/schemas/StockItem'}
+              example:
+                - ingredientId: 11111111-1111-4111-8111-111111111111
+                  usableQuantity: '1000.000'
+                  totalQuantity: '1300.000'
+                  batches:
+                    - id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+                      remainingQuantity: '1000.000'
+                      expiresOn: '2026-10-18'
+                      daysRemaining: 5
+                      state: fresh
+                    - id: cccccccc-cccc-4ccc-8ccc-cccccccccccc
+                      remainingQuantity: '300.000'
+                      expiresOn: '2026-10-12'
+                      daysRemaining: -1
+                      state: expired
   /orders:
     post:
       tags: [orders]
       operationId: placeOrder
+      summary: Place an idempotent all-or-nothing order
       security: [{demoSession: []}]
       parameters:
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -109,6 +168,12 @@ paths:
         content:
           application/json:
             schema: {$ref: '#/components/schemas/OrderRequest'}
+            example:
+              source: web
+              externalId: POS-20261013-0001
+              items:
+                - dishId: 22222222-2222-4222-8222-222222222222
+                  servings: 2
       responses:
         '201':
           description: Accepted order
@@ -126,6 +191,8 @@ paths:
     get:
       tags: [orders]
       operationId: getOrder
+      summary: Get a previously persisted order outcome
+      security: []
       parameters:
         - name: id
           in: path
@@ -137,11 +204,24 @@ paths:
           content:
             application/json:
               schema: {$ref: '#/components/schemas/OrderResult'}
+              example:
+                id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+                status: accepted
+                items:
+                  - dishId: 22222222-2222-4222-8222-222222222222
+                    recipeVersion: 1
+                    servings: 2
+                consumption:
+                  - batchId: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+                    ingredientId: 11111111-1111-4111-8111-111111111111
+                    quantity: '240.000'
         '404': {description: Unknown order}
   /stop-list:
     get:
       tags: [insight]
       operationId: getStopList
+      summary: List unavailable dishes with their shortages
+      security: []
       responses:
         '200':
           description: Unavailable dishes and missing ingredients
@@ -154,6 +234,8 @@ paths:
     get:
       tags: [insight]
       operationId: getHotOffers
+      summary: List available dishes with explainable expiry priority
+      security: []
       responses:
         '200':
           description: Available dishes ordered by explainable expiry priority
@@ -166,6 +248,8 @@ paths:
     get:
       tags: [insight]
       operationId: getReplenishment
+      summary: Get explainable target-stock advice
+      security: []
       responses:
         '200':
           description: Simple target-stock advice with explanation
@@ -178,6 +262,8 @@ paths:
     get:
       tags: [demo]
       operationId: streamEvents
+      summary: Stream committed inventory and order changes
+      security: []
       parameters:
         - name: Last-Event-ID
           in: header
@@ -211,6 +297,12 @@ components:
       content:
         application/json:
           schema: {$ref: '#/components/schemas/Problem'}
+          example:
+            code: VALIDATION_FAILED
+            message: Request validation failed
+            requestId: 00000000-0000-4000-8000-000000000001
+            details:
+              lines: must contain at least one item
     Unauthorized:
       description: Login or CSRF required
       content:
@@ -221,6 +313,25 @@ components:
       content:
         application/json:
           schema: {$ref: '#/components/schemas/Problem'}
+          examples:
+            idempotencyPayloadMismatch:
+              summary: Key was already used with a different request body
+              value:
+                code: IDEMPOTENCY_CONFLICT
+                message: Idempotency key was already used for a different request
+                requestId: 00000000-0000-4000-8000-000000000002
+            insufficientStock:
+              summary: Order rejected without partial consumption
+              value:
+                code: INSUFFICIENT_STOCK
+                message: Order rejected because required ingredients are unavailable
+                requestId: 00000000-0000-4000-8000-000000000003
+                details:
+                  shortage:
+                    - ingredientId: 11111111-1111-4111-8111-111111111111
+                      required: '240.000'
+                      available: '100.000'
+                      missing: '140.000'
   schemas:
     Ingredient:
       type: object

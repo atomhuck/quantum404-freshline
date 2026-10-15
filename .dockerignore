@@ -1,0 +1,13 @@
+**
+!backend
+!backend/**
+backend/**/target
+backend/**/target/**
+backend/**/node_modules
+backend/**/.env
+backend/**/.env.*
+backend/**/*.pem
+backend/**/*.key
+backend/**/*.p12
+backend/**/*.dump
+backend/**/*.sql.gz
