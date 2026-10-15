@@ -8,13 +8,15 @@ substep: "T019 preflight remains the only delivery-related code; transactional u
 last_verified_code_commit: 9315713d133daaf897e1e8fbc58ab80f8dbfcb13
 checkpoint: WIP
 next_step: "After H-02 assigns owners and Data publishes T003/T012/T018/T021, Orders publishes T011/T014/T017, Web publishes T002, and QA publishes T004, fetch exact SHAs and freeze Java ports; then implement transactional T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks. Continue to T022 after T021; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-15T06:30:11Z
+heartbeat_utc: 2026-10-15T06:39:25Z
 human_required: [H-02]
 ---
 
 # Lead progress
 
-[План работы](../lanes/lead.md) · [Журнал передачи](../handoffs/lead.md) · [Общий календарь](../ROADMAP.md). Это оперативное состояние полосы; при смене компьютера читать также последнюю запись журнала.
+[План работы](../lanes/lead.md) · [Таблица всех задач](../tracking/lead.md) · [Таблицы направлений](../tracking/README.md) · [Журнал передачи](../handoffs/lead.md) · [Общий календарь](../ROADMAP.md). Это оперативное состояние полосы; при смене компьютера читать также последнюю запись журнала.
+
+Срез Lead на 15.10.2026: **6/20 задач DONE = 30% по числу пунктов; осталось 14** (T019 WIP, T010/G0 NOT RUN, 12 TODO). Это не процент готовности работающего продукта: G0/G1/G2/G3/RELEASE остаются NOT RUN.
 
 | Task | State | Evidence |
 |---|---|---|
@@ -91,3 +93,5 @@ Hosted PR run `38577183271` checked remote checkpoint `37dfdd2bb83eb800ec3bc5cc2
 Hosted PR runs `38577473301` and `38577711452` checked published status checkpoints `2ffa5e088ced7d0b8172c7279b19d1c059e9c45a` and `7f6cdf242b1d87a2259ab992a4a4db16129e3758`; both include verified code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`. In both runs Backend/OpenAPI/Compose succeeded on Temurin Java 21 (18 app tests, OpenAPI lint, Compose config, PostgreSQL no-host-port assertion). Full-stack failed at absent `frontend/package.json`; frontend/simulator remain unverified. `git ls-remote` at 2026-10-14T14:08:23Z showed Data/Orders/Web/QA/Integration still at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; H-02 remains pending. No G0/G1/G2/G3/RELEASE gate is PASS.
 
 Remote status refresh 2026-10-15T06:30:11Z: `origin/codex/lead` is still `b94b9d1cf91940e78d8052bf93fd754f84d9a4e5`; `codex/data`, `orders`, `web`, `qa`, `integration`, and `main` remain at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`. Local `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match `origin/codex/lead`; no handoff occurred. Latest hosted run `38577983426` for checkpoint `b94b9d1cf91940e78d8052bf93fd754f84d9a4e5` has Backend/OpenAPI/Compose success and Full-stack failure at missing `frontend/package.json`; it exercises the same code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`. PR #1 remains Draft and its description still names the initial T013 checkpoint; it is not merged. H-02 remains pending, and G0/G1/G2/G3/RELEASE remain NOT RUN.
+
+Task-tracking checkpoint 2026-10-15T06:39:25Z: `git fetch origin --prune` confirmed `origin/codex/lead` and local `HEAD` at `dbf7071046b1c41c83682971840673841fd199f6` before the documentation change; Data/Orders/Web/QA/Integration remained at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`. Content commit `4ad99724d992f2e1d7ad427829361cfcec26aa04` adds [five per-lane tables](../tracking/README.md), links from each lane plan and README. A coverage check compared task IDs from each lane plan with table rows, found no missing/extra/duplicate IDs, counted Lead 20 (6 DONE, 1 WIP, 1 NOT RUN, 12 TODO), Data 13, Orders 8, Web 12, QA 10, and verified all relative links in the tables. `git diff --cached --check` exited 0. These are documentation checks only; product tests were not rerun. `last_verified_code_commit` remains `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`; no product task or gate changed, and no handoff occurred. Next step remains T019 after shared Data/Orders artifacts and H-02 ownership assignment.
