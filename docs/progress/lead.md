@@ -8,7 +8,7 @@ substep: "T019 preflight remains the only delivery-related code; transactional u
 last_verified_code_commit: 9315713d133daaf897e1e8fbc58ab80f8dbfcb13
 checkpoint: WIP
 next_step: "After H-02 assigns owners and Data publishes T003/T012/T018/T021, Orders publishes T011/T014/T017, Web publishes T002, and QA publishes T004, fetch exact SHAs and freeze Java ports; then implement transactional T019 POST /deliveries with PostgreSQL replay/hash-conflict/whole-payload checks. Continue to T022 after T021; rerun full Compose/CI when Web/simulator contexts arrive"
-heartbeat_utc: 2026-10-14T14:08:58Z
+heartbeat_utc: 2026-10-15T06:30:11Z
 human_required: [H-02]
 ---
 
@@ -89,3 +89,5 @@ Malformed-body contract-test follow-up 2026-10-14T14:03:27Z: test-only code comm
 Hosted PR run `38577183271` checked remote checkpoint `37dfdd2bb83eb800ec3bc5cc2a2a6c1e4276fcc4` (code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`). Backend/OpenAPI/Compose job succeeded on Temurin Java 21: 18 app tests, OpenAPI lint, Compose config, and PostgreSQL no-host-port assertion passed. Full-stack job failed at the absent `frontend/package.json` with `FAIL: NOT RUN / FAIL: required full-stack file 'frontend/package.json' is missing; its owner has not published this Compose dependency.` This does not validate frontend/simulator or close a release gate. G0/G1/G2/G3/RELEASE remain NOT RUN; PR #1 remains Draft.
 
 Hosted PR runs `38577473301` and `38577711452` checked published status checkpoints `2ffa5e088ced7d0b8172c7279b19d1c059e9c45a` and `7f6cdf242b1d87a2259ab992a4a4db16129e3758`; both include verified code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`. In both runs Backend/OpenAPI/Compose succeeded on Temurin Java 21 (18 app tests, OpenAPI lint, Compose config, PostgreSQL no-host-port assertion). Full-stack failed at absent `frontend/package.json`; frontend/simulator remain unverified. `git ls-remote` at 2026-10-14T14:08:23Z showed Data/Orders/Web/QA/Integration still at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`; H-02 remains pending. No G0/G1/G2/G3/RELEASE gate is PASS.
+
+Remote status refresh 2026-10-15T06:30:11Z: `origin/codex/lead` is still `b94b9d1cf91940e78d8052bf93fd754f84d9a4e5`; `codex/data`, `orders`, `web`, `qa`, `integration`, and `main` remain at baseline `43bbc7bcb6db43da03c556fd5c46b1b03c099280`. Local `docs/lanes/lead.md`, `docs/progress/lead.md`, and `docs/handoffs/lead.md` match `origin/codex/lead`; no handoff occurred. Latest hosted run `38577983426` for checkpoint `b94b9d1cf91940e78d8052bf93fd754f84d9a4e5` has Backend/OpenAPI/Compose success and Full-stack failure at missing `frontend/package.json`; it exercises the same code/test SHA `9315713d133daaf897e1e8fbc58ab80f8dbfcb13`. PR #1 remains Draft and its description still names the initial T013 checkpoint; it is not merged. H-02 remains pending, and G0/G1/G2/G3/RELEASE remain NOT RUN.
