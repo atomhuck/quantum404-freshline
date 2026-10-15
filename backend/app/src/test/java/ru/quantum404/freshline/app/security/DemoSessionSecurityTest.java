@@ -123,6 +123,13 @@ class DemoSessionSecurityTest {
         mockMvc.perform(post("/api/v1/test/write")
                         .session(session)
                         .header("X-CSRF-Token", csrfToken)
+                        .header("Idempotency-Key", "retry-key-0001", "retry-key-0002"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code", is("INVALID_IDEMPOTENCY_KEY")));
+
+        mockMvc.perform(post("/api/v1/test/write")
+                        .session(session)
+                        .header("X-CSRF-Token", csrfToken)
                         .header("Idempotency-Key", "12345678"))
                 .andExpect(status().isNoContent());
 

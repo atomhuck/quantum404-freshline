@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import ru.quantum404.freshline.app.api.ApiProblemWriter;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 final class IdempotencyKeyInterceptor implements HandlerInterceptor {
     static final String HEADER = "Idempotency-Key";
@@ -26,10 +27,17 @@ final class IdempotencyKeyInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String key = request.getHeader(HEADER);
-        if (key == null) {
+        Enumeration<String> values = request.getHeaders(HEADER);
+        if (values == null || !values.hasMoreElements()) {
             problemWriter.write(request, response, HttpServletResponse.SC_BAD_REQUEST,
                     "IDEMPOTENCY_KEY_REQUIRED", "Idempotency-Key is required");
+            return false;
+        }
+
+        String key = values.nextElement();
+        if (values.hasMoreElements()) {
+            problemWriter.write(request, response, HttpServletResponse.SC_BAD_REQUEST,
+                    "INVALID_IDEMPOTENCY_KEY", "Exactly one Idempotency-Key must be supplied");
             return false;
         }
 
