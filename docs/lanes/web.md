@@ -1,6 +1,6 @@
 # План полосы web — интерфейс, UX и демо-клиент
 
-**Ветка:** `codex/web`. **Владелец:** backend fullstack под UX-направлением lead. **Зона:** `frontend/`, `simulator/`. **Статус:** [progress/web](../progress/web.md). **Передачи:** [handoffs/web](../handoffs/web.md). **Промпт:** [backend-fullstack](../../prompts/backend-fullstack.md).
+**Ветка:** `codex/web`. **Владелец:** backend fullstack под UX-направлением lead. **Зона:** `frontend/`, `simulator/`. **Таблица всех задач:** [tracking/web](../tracking/web.md). **Статус:** [progress/web](../progress/web.md). **Передачи:** [handoffs/web](../handoffs/web.md). **Промпт:** [backend-fullstack](../../prompts/backend-fullstack.md).
 
 ## Два независимых потока одной полосы
 

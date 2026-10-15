@@ -1,6 +1,6 @@
 # План полосы data — PostgreSQL и Java persistence
 
-**Ветка:** `codex/data`. **Зона:** `backend/persistence/`, Flyway/SQL, synthetic seed и backup/restore. **Статус:** [progress/data](../progress/data.md). **Передачи:** [handoffs/data](../handoffs/data.md). **Промпт:** [data-engineer](../../prompts/data-engineer.md).
+**Ветка:** `codex/data`. **Зона:** `backend/persistence/`, Flyway/SQL, synthetic seed и backup/restore. **Таблица всех задач:** [tracking/data](../tracking/data.md). **Статус:** [progress/data](../progress/data.md). **Передачи:** [handoffs/data](../handoffs/data.md). **Промпт:** [data-engineer](../../prompts/data-engineer.md).
 
 ## Последовательность
 

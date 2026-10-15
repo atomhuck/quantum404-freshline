@@ -1,6 +1,6 @@
 # План полосы lead — Java API, интеграция, выпуск
 
-**Ветка:** `codex/lead`. **Зона:** `backend/app/`, корневые Compose/CI/scripts/deploy, OpenAPI и выпуск. **Текущий статус:** [progress/lead](../progress/lead.md). **История смены ноутбука:** [handoffs/lead](../handoffs/lead.md). **Промпт:** [backend-lead](../../prompts/backend-lead.md).
+**Ветка:** `codex/lead`. **Зона:** `backend/app/`, корневые Compose/CI/scripts/deploy, OpenAPI и выпуск. **Таблица всех задач:** [tracking/lead](../tracking/lead.md). **Текущий статус:** [progress/lead](../progress/lead.md). **История смены ноутбука:** [handoffs/lead](../handoffs/lead.md). **Промпт:** [backend-lead](../../prompts/backend-lead.md).
 
 ## Порядок работы
 
